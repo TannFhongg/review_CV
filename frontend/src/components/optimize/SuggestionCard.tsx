@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Check, X, ArrowRight, ShieldCheck, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getPriorityColor, getPriorityLabel } from '@/lib/utils';
 import type { CVSuggestion } from '@/lib/types';
+import { WordDiffViewer } from './WordDiffViewer';
 
 interface SuggestionCardProps {
   suggestion: CVSuggestion;
@@ -62,30 +63,11 @@ export function SuggestionCard({
       </CardHeader>
 
       <CardContent className="p-6 space-y-6">
-        {/* Before & After comparison */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Before */}
-          <div className="space-y-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-rose-500 inline-block"></span>
-              Nội dung gốc (Trước)
-            </span>
-            <div className="p-4 rounded-lg bg-rose-50/30 border border-rose-100 text-xs font-mono text-slate-800 leading-relaxed min-h-[120px]">
-              {suggestion.original_text}
-            </div>
-          </div>
-
-          {/* After */}
-          <div className="space-y-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
-              Nội dung tối ưu (Sau)
-            </span>
-            <div className="p-4 rounded-lg bg-emerald-50/40 border border-emerald-200 text-xs font-mono text-slate-900 leading-relaxed min-h-[120px] font-medium">
-              {suggestion.suggested_text}
-            </div>
-          </div>
-        </div>
+        {/* Visual Word-level Diff comparison */}
+        <WordDiffViewer
+          originalText={suggestion.original_text}
+          suggestedText={suggestion.suggested_text}
+        />
 
         {/* Change explanation & grounding */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 p-4 bg-slate-50 rounded-lg border border-slate-100 text-xs">
