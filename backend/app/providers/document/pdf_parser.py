@@ -1,6 +1,6 @@
 """PDF document parser using PyMuPDF (fitz)."""
 
-import fitz  # PyMuPDF
+import pymupdf as fitz
 import structlog
 
 from app.providers.document.base import DocumentParser

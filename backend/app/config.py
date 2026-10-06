@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     # === LLM Provider ===
     llm_provider: str = Field(default="gemini", description="LLM provider: gemini, openai")
     gemini_api_key: str = Field(default="", description="Google Gemini API key")
-    gemini_model: str = Field(default="gemini-2.5-flash", description="Gemini model name")
+    gemini_model: str = Field(default="gemini-3.5-flash-lite", description="Gemini model name")
     openai_api_key: str = Field(default="", description="OpenAI API key")
     openai_model: str = Field(default="gpt-4o", description="OpenAI model name")
 
