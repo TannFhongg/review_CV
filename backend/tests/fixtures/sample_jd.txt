@@ -1,0 +1,37 @@
+Senior C++ Software Engineer — Automotive
+
+Company: TechAuto GmbH
+Location: Ho Chi Minh City, Vietnam
+Employment Type: Full-time
+
+About Us:
+TechAuto is a leading automotive software company specializing in ECU development
+and testing tools for major OEMs worldwide.
+
+Requirements:
+- 3+ years of experience in C++ development
+- Strong knowledge of Qt framework (Qt Widgets, QML)
+- Experience with Linux development and embedded systems
+- Familiarity with automotive protocols (CAN, LIN, UDS)
+- Understanding of software development lifecycle (SDLC)
+- Version control with Git
+- Good communication skills in English
+
+Preferred:
+- Experience with Docker and CI/CD pipelines
+- Knowledge of AUTOSAR architecture
+- Experience with Agile/Scrum methodology
+- Familiarity with static analysis tools (Coverity, Klocwork)
+- Python scripting abilities
+
+Responsibilities:
+- Develop and maintain C++ applications for automotive ECU testing
+- Design and implement Qt-based GUI applications
+- Integrate with automotive diagnostic protocols
+- Collaborate with cross-functional teams across multiple locations
+- Write unit tests and perform code reviews
+- Document software architecture and design decisions
+- Participate in sprint planning and retrospectives
+
+Education:
+- Bachelor's degree in Computer Science, Electrical Engineering, or related field

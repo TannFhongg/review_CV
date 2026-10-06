@@ -1,0 +1,55 @@
+VO VAN TUAN
+Fresher C++ Software Engineer
+
+Email: tuanvo@example.com
+Phone: +84 123 456 789
+GitHub: github.com/tuanvo
+Location: Ho Chi Minh City, Vietnam
+
+SUMMARY
+Motivated Computer Engineering graduate with hands-on experience in C++ and
+embedded systems development. Passionate about automotive software and
+real-time systems. Looking for opportunities to grow as a software engineer.
+
+EDUCATION
+Ho Chi Minh City University of Technology (HCMUT)
+Bachelor of Engineering — Computer Engineering
+2020 - 2024
+GPA: 3.2/4.0
+
+Relevant coursework: Data Structures, Algorithms, Operating Systems,
+Embedded Systems, Digital Signal Processing
+
+PROJECTS
+
+VTuber Avatar Control Panel
+- Developed a Qt Widgets application for controlling VTuber avatar states
+- Implemented interactive UI controls using signal/slot communication
+- Built responsive layouts with Qt Designer
+- Technologies: C++, Qt Widgets, Qt Creator
+
+Embedded Weather Station
+- Built a weather monitoring system on Raspberry Pi with Embedded Linux
+- Sensor data acquisition via I2C/SPI protocols
+- Real-time data visualization using Python Flask
+- Technologies: C, Embedded Linux, Raspberry Pi, Python
+
+Smart Home Controller
+- Designed a home automation system using ESP32
+- Implemented CAN bus communication between modules
+- Developed OTA firmware update mechanism
+- Technologies: C++, FreeRTOS, CAN protocol
+
+TECHNICAL SKILLS
+- Languages: C++, C, Python
+- Frameworks: Qt, FreeRTOS
+- Tools: Git, VS Code, Qt Creator, Make/CMake
+- Platforms: Linux, Raspberry Pi, ESP32
+- Protocols: CAN, I2C, SPI
+
+CERTIFICATIONS
+- Coursera: Introduction to Embedded Systems Software and Development Environments
+
+LANGUAGES
+- Vietnamese: Native
+- English: Intermediate (IELTS 6.0)
