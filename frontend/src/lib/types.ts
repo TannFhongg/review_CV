@@ -145,3 +145,27 @@ export interface AnalysisResult {
   analyzed_at: string;
   processing_time_seconds: number;
 }
+
+// === Cover Letter Models ===
+export interface CoverLetterRequest {
+  structured_jd: StructuredJD;
+  structured_cv: StructuredCV;
+  tone?: string;
+  language?: string;
+  custom_instructions?: string | null;
+}
+
+export interface CoverLetterResponse {
+  subject: string;
+  salutation: string;
+  opening: string;
+  body_paragraphs: string[];
+  closing: string;
+  sign_off: string;
+  full_letter: string;
+  tone: string;
+  language: string;
+  word_count: number;
+  key_strengths_highlighted: string[];
+}
+

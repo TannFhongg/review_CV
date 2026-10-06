@@ -172,3 +172,21 @@ class ErrorDetail(BaseModel):
 class ErrorResponse(BaseModel):
     """Standard error response."""
     error: ErrorDetail
+
+
+# === Cover Letter Response ===
+
+class CoverLetterResponse(BaseModel):
+    """Generated Cover Letter response."""
+    subject: str
+    salutation: str
+    opening: str
+    body_paragraphs: list[str]
+    closing: str
+    sign_off: str
+    full_letter: str
+    tone: str
+    language: str
+    word_count: int
+    key_strengths_highlighted: list[str] = []
+

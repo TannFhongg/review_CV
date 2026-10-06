@@ -48,3 +48,18 @@ export async function healthCheck(): Promise<{ status: string; version: string }
   const response = await fetch(`${API_BASE_URL}/health`);
   return handleResponse(response);
 }
+
+export async function generateCoverLetter(
+  request: import('./types').CoverLetterRequest
+): Promise<import('./types').CoverLetterResponse> {
+  const response = await fetch(`${API_BASE_URL}/cover-letter/generate`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
+
+  return handleResponse(response);
+}
+

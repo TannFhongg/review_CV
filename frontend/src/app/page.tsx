@@ -12,6 +12,7 @@ import {
   AlertCircle,
   Loader2,
   CheckCircle2,
+  Mail,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -23,6 +24,7 @@ import { MatchSummaryCards } from '@/components/analysis/MatchSummaryCards';
 import { TopRecommendationsList } from '@/components/analysis/TopRecommendationsList';
 import { EvidenceMap } from '@/components/analysis/EvidenceMap';
 import { SuggestionCard } from '@/components/optimize/SuggestionCard';
+import { CoverLetterGenerator } from '@/components/cover-letter/CoverLetterGenerator';
 import { ExportModule } from '@/components/export/ExportModule';
 
 import { useAnalysisStore } from '@/stores/analysisStore';
@@ -291,7 +293,7 @@ export default function Home() {
 
             {/* Navigation Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid grid-cols-4 h-11 bg-slate-200/70 p-1 rounded-xl">
+              <TabsList className="grid grid-cols-2 sm:grid-cols-5 h-auto sm:h-11 bg-slate-200/70 p-1 rounded-xl gap-1">
                 <TabsTrigger
                   value="overview"
                   className="text-xs font-semibold data-[state=active]:bg-white data-[state=active]:shadow-xs flex items-center gap-1.5"
@@ -312,6 +314,13 @@ export default function Home() {
                 >
                   <Wand2 className="h-4 w-4" />
                   <span>Tối ưu hóa ({result.suggestions.length})</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="cover-letter"
+                  className="text-xs font-semibold data-[state=active]:bg-white data-[state=active]:shadow-xs flex items-center gap-1.5"
+                >
+                  <Mail className="h-4 w-4 text-blue-600" />
+                  <span>Cover Letter ✉️</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="export"
@@ -388,7 +397,14 @@ export default function Home() {
               </div>
             )}
 
-            {/* TAB 4: EXPORT */}
+            {/* TAB 4: COVER LETTER GENERATOR */}
+            {activeTab === 'cover-letter' && (
+              <div className="space-y-6">
+                <CoverLetterGenerator result={result} />
+              </div>
+            )}
+
+            {/* TAB 5: EXPORT */}
             {activeTab === 'export' && (
               <div className="space-y-6">
                 <ExportModule result={result} />

@@ -103,3 +103,17 @@ def _get_extension(filename: str) -> str:
     if "." not in filename:
         return ""
     return "." + filename.rsplit(".", 1)[-1].lower()
+
+
+from pydantic import BaseModel
+from app.api.schemas.response import StructuredCVResponse, StructuredJDResponse
+
+
+class CoverLetterGenerateRequest(BaseModel):
+    """Payload for generating a cover letter."""
+    structured_jd: StructuredJDResponse
+    structured_cv: StructuredCVResponse
+    tone: str = "professional"  # professional | enthusiastic | concise
+    language: str = "vi"  # vi | en
+    custom_instructions: str | None = None
+
