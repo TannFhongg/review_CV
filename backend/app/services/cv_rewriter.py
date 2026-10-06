@@ -9,22 +9,25 @@ from app.providers.llm.base import LLMProvider
 
 logger = structlog.get_logger()
 
-CV_REWRITER_SYSTEM_PROMPT = """You are an elite Career Coach and Resume Engineering Specialist.
-Your task is to propose high-impact Before/After rewrite suggestions for a candidate's CV to maximize alignment with a specific Job Description.
+CV_REWRITER_SYSTEM_PROMPT = """You are an elite Career Coach and Technical Resume Optimization Specialist.
+Your task is to analyze the candidate's CV against the Job Description and provide concrete, actionable Before/After rewrite suggestions to maximize CV ↔ JD alignment.
 
-CRITICAL POLICY — STRICT NO FABRICATION:
-1. The rewritten version MUST remain 100% factually supported by the candidate's original CV.
-2. NEVER invent achievements, metrics, companies, years, or technologies that the candidate never mentioned.
-3. If optimizing a project:
-   - Clarify and emphasize the specific technologies already mentioned elsewhere in the CV (e.g., if the CV lists Qt Widgets in skills and a VTuber app in projects, emphasize 'Qt Widgets' and 'signals and slots' in the project bullet).
-4. For any requirement where the candidate has no evidence:
-   - Explicitly note: "Potential improvement — only add this if you genuinely have this experience."
-   - Do NOT invent fake experience in the rewrite.
-5. For EVERY suggestion you must explain:
-   - What changed?
-   - Why?
+CRITICAL OBJECTIVE:
+You must provide between 3 to 6 practical Before/After suggestions covering:
+1. Professional Summary / Career Objective: Rewrite to target this specific job title and highlight the candidate's strongest matching strengths.
+2. Projects: Enhance project bullet points to explicitly highlight technologies, protocols, and architectural details requested in the JD (e.g. Qt Widgets, signals/slots, Embedded Linux, CAN, etc.) based on existing CV context.
+3. Technical Skills Section: Re-order, categorize, and emphasize keywords that match the JD requirements for ATS readability.
+4. Experience (if present): Refine duties and achievements to reflect JD responsibilities.
+
+CRITICAL POLICY — NO FABRICATION:
+1. The rewritten version MUST remain factually grounded in the candidate's actual background.
+2. NEVER invent work history, fake degrees, companies, or tools that have no basis in the CV.
+3. If recommending adding a missing requirement (e.g. Docker), you must frame it clearly: "Chỉ bổ sung nếu bạn thực tế đã từng dùng qua trong bài tập/dự án trường."
+4. For EVERY suggestion you MUST explain:
+   - What changed? (Thay đổi gì)
+   - Why? (Tại sao - liên kết với yêu cầu nào trong JD)
    - Which JD requirement does it address?
-   - What original CV evidence justifies this change?
+   - What original CV evidence justifies this?
 """
 
 
@@ -55,7 +58,7 @@ class CVRewriterService:
         cv: StructuredCV,
         matches: list[RequirementMatch],
     ) -> list[CVSuggestion]:
-        """Generate tailored Before/After rewrite suggestions.
+        """Generate tailored Before/After rewrite suggestions across multiple CV sections.
 
         Args:
             jd: Structured JD.
@@ -65,39 +68,59 @@ class CVRewriterService:
         Returns:
             List of CVSuggestion items.
         """
-        # Focus on items that need improvement (partial match, weak evidence, or strong match needing better visibility)
-        target_matches = [
-            m for m in matches
-            if m.status in {MatchStatus.PARTIAL, MatchStatus.WEAK, MatchStatus.STRONG}
-            and m.priority != Priority.ALREADY_STRONG
-        ]
+        # Collect key gaps and highlights
+        gaps = [
+            f"- [{m.priority.value.upper()}] {m.requirement} ({m.status.value}): {m.recommendation or ''}"
+            for m in matches
+            if m.status in {MatchStatus.MISSING, MatchStatus.WEAK, MatchStatus.PARTIAL}
+        ][:6]
 
-        if not target_matches:
-            target_matches = [m for m in matches if m.status == MatchStatus.PARTIAL][:3]
+        strong = [
+            f"- [STRONG] {m.requirement}: CV has evidence in {', '.join(e.source_section for e in m.evidence)}"
+            for m in matches
+            if m.status == MatchStatus.STRONG
+        ][:5]
 
-        if not target_matches:
-            # Fallback if already strong everywhere
-            return []
+        # Build clean CV overview
+        cv_summary = cv.summary or cv.title or "Fresher Software Engineer"
+        cv_projects_str = "\n".join(
+            f"Project: {p.name}\n- Tech: {', '.join(p.technologies)}\n- Desc: {p.description}\n- Bullets: {' | '.join(p.highlights)}"
+            for p in cv.projects
+        ) if cv.projects else "N/A"
 
-        match_contexts = [
-            f"- Requirement: {m.requirement} | Status: {m.status.value} | Recommendation: {m.recommendation or ''}"
-            for m in target_matches[:5]
-        ]
+        cv_skills_str = ", ".join(cv.technical_skills) if cv.technical_skills else "N/A"
+        cv_exp_str = "\n".join(
+            f"Exp: {w.title} at {w.company} - {w.description}"
+            for w in cv.experience
+        ) if cv.experience else "N/A"
 
-        prompt = f"""Generate up to 5 concrete Before/After rewrite suggestions for this candidate's CV.
+        prompt = f"""Target Position: {jd.job_title} at {jd.company or 'Target Company'}
 
-CANDIDATE CV ORIGINAL EXCERPTS:
-- Summary: {cv.summary or cv.title or 'N/A'}
-- Projects: {', '.join(p.name + ': ' + p.description for p in cv.projects[:3]) or 'N/A'}
-- Technical Skills: {', '.join(cv.technical_skills[:15]) or 'N/A'}
+KEY JD REQUIREMENTS & GAPS:
+{chr(10).join(gaps) if gaps else 'All direct requirements are covered, optimize keyword depth and layout.'}
 
-TARGET JD REQUIREMENTS & GAPS:
-{chr(10).join(match_contexts)}
+STRONG MATCHES TO HIGHLIGHT:
+{chr(10).join(strong) if strong else 'N/A'}
 
-Generate actionable Before/After revisions for the candidate's actual text.
+CANDIDATE ORIGINAL CV CONTENT:
+=== SUMMARY / TITLE ===
+{cv_summary}
+
+=== TECHNICAL SKILLS ===
+{cv_skills_str}
+
+=== PROJECTS ===
+{cv_projects_str}
+
+=== EXPERIENCE ===
+{cv_exp_str}
+
+TASK:
+Provide 3 to 6 high-impact Before/After rewrite suggestions to optimize this CV for '{jd.job_title}'.
+Ensure every suggestion provides concrete, ready-to-copy text and clear explanations.
 """
 
-        logger.info("generating_cv_suggestions_started", targets_count=len(target_matches))
+        logger.info("generating_cv_suggestions_started", candidate=cv.name, target_job=jd.job_title)
 
         result: _RewriterResponse = await self.llm.generate_structured(
             prompt=prompt,
